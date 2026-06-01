@@ -34,8 +34,15 @@ function sampleRandom(items, count, seed) {
   return result.slice(0, Math.min(count, result.length));
 }
 
+// Configurazione globale per la firma Stremio Addons
+const STREMIO_ADDONS_CONFIG = {
+  "issuer": "https://stremio-addons.net",
+  "signature": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..4zwbGZk-jBCjF5G7liMiFw.aUXE9RQ94uwRnrGSWro3RCQaIxgyv48gBo6CkHzyWBUUvlFp3RISZ-jeAuLpaEbQ9wROLVMREy8xtmLLch7Kftc_aCCsg6QnhmhWIh1iGFSfor1CqKrnHhRASX4qDKWx.Q9l-SSwc0Sk2jg0mRGgQ_A"
+};
+
 async function getManifest(userUuid, baseUrl = process.env.ADDON_BASE_URL || 'https://raccoonmendations-stremio-addon.vercel.app') {
   baseUrl = normalizeBaseUrl(baseUrl);
+  
   // ============================================================
   // 1) MANIFEST SENZA UUID → AIOMetadata richiede cataloghi validi
   // ============================================================
@@ -63,11 +70,12 @@ async function getManifest(userUuid, baseUrl = process.env.ADDON_BASE_URL || 'ht
           extra: [{ name: "skip", isRequired: false }]
         }
       ],
-        idPrefixes: ["tt", "tmdb:"],
-        behaviorHints: {
-          configurable: true,
-          configurationRequired: false
-        }
+      idPrefixes: ["tt", "tmdb:"],
+      behaviorHints: {
+        configurable: true,
+        configurationRequired: false
+      },
+      stremioAddonsConfig: STREMIO_ADDONS_CONFIG
     };
   }
 
@@ -106,7 +114,8 @@ async function getManifest(userUuid, baseUrl = process.env.ADDON_BASE_URL || 'ht
         behaviorHints: {
           configurable: true,
           configurationRequired: false
-        }
+        },
+        stremioAddonsConfig: STREMIO_ADDONS_CONFIG
       };
     }
 
@@ -142,7 +151,8 @@ async function getManifest(userUuid, baseUrl = process.env.ADDON_BASE_URL || 'ht
         behaviorHints: {
           configurable: true,
           configurationRequired: false
-        }
+        },
+        stremioAddonsConfig: STREMIO_ADDONS_CONFIG
       };
     }
 
@@ -228,7 +238,8 @@ async function getManifest(userUuid, baseUrl = process.env.ADDON_BASE_URL || 'ht
       behaviorHints: {
         configurable: true,
         configurationRequired: false
-      }
+      },
+      stremioAddonsConfig: STREMIO_ADDONS_CONFIG
     };
 
   } catch (error) {
@@ -247,12 +258,11 @@ async function getManifest(userUuid, baseUrl = process.env.ADDON_BASE_URL || 'ht
       behaviorHints: {
         configurable: true,
         configurationRequired: false
-      }
+      },
+      stremioAddonsConfig: STREMIO_ADDONS_CONFIG
     };
   }
 }
-
-module.exports = { getManifest, getPublicManifest };
 
 // ============================================================
 // PUBLIC MANIFEST - Hourly rotating demo for aggregators
@@ -368,6 +378,9 @@ async function getPublicManifest(baseUrl = process.env.ADDON_BASE_URL || 'https:
     behaviorHints: {
       configurable: true,
       configurationRequired: false
-    }
+    },
+    stremioAddonsConfig: STREMIO_ADDONS_CONFIG
   };
 }
+
+module.exports = { getManifest, getPublicManifest };
